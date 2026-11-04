@@ -24,7 +24,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            "bumpngo = lab02_pkg.bumpngo:main"
+            "bumpngo = lab02_pkg.bumpngo:main",
+            "controller = lab02_pkg.controller:main",            
         ],
     },
 )
