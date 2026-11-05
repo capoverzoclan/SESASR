@@ -44,12 +44,12 @@ class Bumpngo(Node):
         return np.clip(clean_scan, 0.0, scan.range_max)
 
     def front_distance(self, scan, r):
-        n = int(np.round(np.deg2rad(30) / scan.angle_increment))
+        n = int(np.round(np.deg2rad(45) / scan.angle_increment))
         front = np.concatenate((r[:n], r[-n:]))
         return np.percentile(front, 10)
 
     def choose_dir(self, scan, clean_scan):
-        n = int(np.round(np.deg2rad(30) / scan.angle_increment))
+        n = int(np.round(np.deg2rad(45) / scan.angle_increment))
         left = clean_scan[n:3*n].mean()       # +30° to +90°
         right = clean_scan[-3*n:-n].mean()    # -90° to -30°
         return 1.0 if left >= right else -1.0   # +1 = turn left, -1 = turn right
