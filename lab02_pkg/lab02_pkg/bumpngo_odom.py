@@ -27,8 +27,8 @@ from rclpy.qos import qos_profile_sensor_data
 class Bumpngo_odom(Node):
 
     def __init__(self):
-        super().__init__('bumpngo')
-        self.declare_parameter('max_vel', 0.22)
+        super().__init__('bumpngo_odom')
+        self.declare_parameter('max_vel', 0.18)
         self.max_vel = self.get_parameter('max_vel').get_parameter_value().double_value
         self.declare_parameter('max_w', 1.0)
         self.max_w = self.get_parameter('max_w').get_parameter_value().double_value
@@ -47,8 +47,8 @@ class Bumpngo_odom(Node):
         self.state = 'FORWARD'
         self.turn_dir_relative = 0.0
         self.turn_dir_abs = 0.0
-        self.d_enter = 0.40   # start turning below this front distance (m)
-        self.d_exit = 0.90    # stop turning only above this (m), must be > d_enter
+        self.d_enter = 0.30   # start turning below this front distance (m)
+        self.d_exit = 0.40    # stop turning only above this (m), must be > d_enter
         self.K_w = 5
 
     def listener_callback_scan(self, scan):
