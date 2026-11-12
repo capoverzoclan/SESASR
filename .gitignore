@@ -1,5 +1,7 @@
 py_pubsub/
 ros_tutorials/
 turtlebot3_simulations/
+turtlebot3_perception/
+probabilistic-robotics-python-examples/
 *.pyc
 __pycache__/
