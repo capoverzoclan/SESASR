@@ -39,10 +39,14 @@ def sample_velocity_motion_model(x, u, a, dt):
     w_hat = u[1] + np.random.normal(0, a[2]*u[0]**2 + a[3]*u[1]**2)
     gamma_hat = np.random.normal(0, a[4]*u[0]**2 + a[5]*u[1]**2)
 
+    if abs(w_hat) < 1e-6:
+        w_hat = 1e-6 if w_hat >= 0.0 else -1e-6
+
     r = v_hat/w_hat
     x_prime = x[0] - r*sin(x[2]) + r*sin(x[2]+w_hat*dt)
     y_prime = x[1] + r*cos(x[2]) - r*cos(x[2]+w_hat*dt)
     theta_prime = x[2] + w_hat*dt + gamma_hat*dt
+    theta_prime = (theta_prime + np.pi) % (2 * np.pi) - np.pi
 
     return np.array([x_prime, y_prime, theta_prime])
 
