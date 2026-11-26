@@ -36,7 +36,7 @@ def velocity_mm_Vt(x, u, dt):
                 dt * v * cos(theta + w * dt) / w + v * sin(theta) / w**2 - v * sin(theta + w * dt) / w**2,
             ],
             [
-                -cos(theta) / w - cos(theta + w * dt) / w,
+                cos(theta) / w - cos(theta + w * dt) / w,
                 dt * v * sin(theta + w * dt) / w - v * cos(theta) / w**2 + v * cos(theta + w * dt) / w**2,
             ],
             [0, dt],

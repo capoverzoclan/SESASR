@@ -89,12 +89,11 @@ class RobotEKFExtended(Node):
         # Guard against division by zero in velocity motion model when omega == 0
         if abs(self.mu[4]) < 1e-6:
             self.mu[4] = 1e-6 if self.mu[4] >= 0.0 else -1e-6
-
+        Gt = self.eval_Gt(*self.mu, dt)
+        Vt = self.eval_Vt(*self.mu, dt)
         self.mu = self.eval_gux(*self.mu, dt)
         self.mu[2] = normalize_angle(self.mu[2])
 
-        Gt = self.eval_Gt(*self.mu, dt)
-        Vt = self.eval_Vt(*self.mu, dt)
         self.Sigma = Gt @ self.Sigma @ Gt.T + Vt @ self.Mt @ Vt.T
 
     def update(self, z, eval_hx, eval_Ht, Qt, Ht_args=(), hx_args=(), residual=residual, **kwargs):

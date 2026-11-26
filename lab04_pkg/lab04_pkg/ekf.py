@@ -35,8 +35,7 @@ class RobotEKF(Node):
         self.Sigma = np.eye(dim_x) * 0.1  # covariance state estimate
         self.Mt = np.diag([0.05**2, np.deg2rad(2.0)**2])  # process noise covariance
 
-        self.eval_gux = sample_velocity_motion_model
-        _, self.eval_Gt, self.eval_Vt = velocity_mm_simpy()
+        self.eval_gux, self.eval_Gt, self.eval_Vt = velocity_mm_simpy()
         self.eval_hx_landm, self.eval_Ht_landm = landmark_sm_simpy()
 
         self._I = np.eye(dim_x)  # identity matrix used for computations
@@ -80,12 +79,11 @@ class RobotEKF(Node):
     def predict(self, u, sigma_u, g_extra_args=()):
         """Update the state prediction using control input u and propagate covariance."""
         # Update state prediction evaluating motion model
-        self.mu = self.eval_gux(self.mu, u, sigma_u, *g_extra_args)
-        self.mu[2] = normalize_angle(self.mu[2])
-
         args = (*self.mu, *u)
         Gt = self.eval_Gt(*args, *g_extra_args)
         Vt = self.eval_Vt(*args, *g_extra_args)
+        self.mu = self.eval_gux(self.mu, u, sigma_u, *g_extra_args)
+        self.mu[2] = normalize_angle(self.mu[2])
         self.Sigma = Gt @ self.Sigma @ Gt.T + Vt @ self.Mt @ Vt.T
 
     def update(self, z, eval_hx, eval_Ht, Qt, Ht_args=(), hx_args=(), residual=residual, **kwargs):
