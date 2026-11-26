@@ -73,16 +73,13 @@ class RobotEKF(Node):
         self.v = 0.0
         self.omega = 0.0
 
-        # Velocity model noise parameters (a1,a2,a3,a4,a5,a6)
-        self.vel_model_noise_parameters=np.array([0.01, 0.01, 0.01, 0.01, 0.01, 0.01]) 
-
-    def predict(self, u, sigma_u, g_extra_args=()):
+    def predict(self, u, g_extra_args=()):
         """Update the state prediction using control input u and propagate covariance."""
         # Update state prediction evaluating motion model
         args = (*self.mu, *u)
         Gt = self.eval_Gt(*args, *g_extra_args)
         Vt = self.eval_Vt(*args, *g_extra_args)
-        self.mu = self.eval_gux(self.mu, u, sigma_u, *g_extra_args)
+        self.mu = self.eval_gux(*args, *g_extra_args)
         self.mu[2] = normalize_angle(self.mu[2])
         self.Sigma = Gt @ self.Sigma @ Gt.T + Vt @ self.Mt @ Vt.T
 
@@ -118,7 +115,6 @@ class RobotEKF(Node):
 
     def predict_step(self):
         """Timer callback performing the EKF prediction at 20 Hz."""
-        sigma_u = self.vel_model_noise_parameters
         v = self.v
         w = self.omega
         # Guard against division by zero in velocity motion model when omega == 0
@@ -127,7 +123,7 @@ class RobotEKF(Node):
 
         cmd_vel = np.array([v, w])
         ekf_dt = self.timer_period
-        self.predict(u=cmd_vel, sigma_u=sigma_u, g_extra_args=(ekf_dt,))
+        self.predict(u=cmd_vel, g_extra_args=(ekf_dt,))
         self.publish_ekf()
 
     def update_step(self, msg: LandmarkArray):
