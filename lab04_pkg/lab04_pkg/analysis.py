@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 
-path = Path("results/task12_sim")
+BASE_DIR = Path(__file__).resolve().parents[2]
+path = BASE_DIR / "lab04_data" / "results" / "task12_sim"
 
 odom = pd.read_csv(path / "odom.csv")
 ekf = pd.read_csv(path / "ekf.csv")
@@ -43,15 +44,34 @@ plt.grid(True)
 plt.legend()
 plt.tight_layout()
 
+# #------- theta vs t
+# t_odom = odom["bag_elapsed"].to_numpy()
+# theta_odom = odom["yaw"].to_numpy()
+
+# t_ekf = ekf["bag_elapsed"].to_numpy()
+# theta_ekf = ekf["yaw"].to_numpy()
+
+# t_gt = ground_truth["bag_elapsed"].to_numpy()
+# theta_gt = ground_truth["yaw"].to_numpy()
+
+#===========================================
 #------- theta vs t
-t_odom = odom["bag_elapsed"].to_numpy()
+t_odom = odom["time"].to_numpy()
 theta_odom = odom["yaw"].to_numpy()
 
-t_ekf = ekf["bag_elapsed"].to_numpy()
+t_ekf = ekf["time"].to_numpy()
 theta_ekf = ekf["yaw"].to_numpy()
 
-t_gt = ground_truth["bag_elapsed"].to_numpy()
+t_gt = ground_truth["time"].to_numpy()
 theta_gt = ground_truth["yaw"].to_numpy()
+
+# Common initial time
+t0 = min(t_odom[0], t_ekf[0], t_gt[0])
+#============================================
+
+t_odom = t_odom - t0
+t_ekf = t_ekf - t0
+t_gt = t_gt - t0
 
 plt.figure(figsize=(10, 5))
 

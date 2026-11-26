@@ -38,6 +38,9 @@ def main():
         description='Export ROS 2 odometry to CSV'
     )
 
+    BASE_DIR = Path(__file__).resolve().parents[2]
+    DATA_DIR = BASE_DIR / "lab04_data"
+
     parser.add_argument(
         'bag',
         type=Path,
@@ -47,11 +50,11 @@ def main():
     parser.add_argument(
         '--output',
         type=Path,
-        default=Path('results')
+        default=DATA_DIR / "results"
     )
 
     args = parser.parse_args()
-    bag = args.bag.resolve()
+    bag = (DATA_DIR / args.bag).resolve()
 
     if not (bag / 'metadata.yaml').is_file():
         parser.error(f'metadata.yaml not found in {bag}')
